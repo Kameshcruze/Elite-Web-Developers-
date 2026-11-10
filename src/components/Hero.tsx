@@ -3,10 +3,9 @@ import { HERO_CONTENT, FEATURED_WORKS, ProjectItem } from '../content';
 
 interface HeroProps {
   onOpenIntroVideo: () => void;
-  onSelectProject: (project: ProjectItem) => void;
 }
 
-export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo, onSelectProject }) => {
+export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo }) => {
   const [scrollY, setScrollY] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
@@ -181,12 +180,15 @@ export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo, onSelectProject })
               </div>
             </div>
 
-            {/* Browser-window mock with live screenshot carousel (bottom-aligned, within container) */}
-            <div
-              onClick={() => onSelectProject(activeSlideProject)}
+            {/* Browser-window mock with live screenshot carousel opening project.url in new tab */}
+            <a
+              href={activeSlideProject.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Open ${activeSlideProject.title} live website in a new tab`}
               onMouseEnter={() => setIsCarouselHovered(true)}
               onMouseLeave={() => setIsCarouselHovered(false)}
-              className={`group/browser absolute left-0 bottom-0 w-[92%] h-[60%] bg-[#08090B] border border-[rgba(255,255,255,0.14)] rounded-[14px] lg:rounded-[18px] p-2.5 sm:p-3.5 shadow-2xl transition-all duration-900 delay-500 ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer hover:border-[#FFC900]/70 z-20 ${
+              className={`group/browser absolute left-0 bottom-0 w-[92%] h-[60%] bg-[#08090B] border border-[rgba(255,255,255,0.14)] rounded-[14px] lg:rounded-[18px] p-2.5 sm:p-3.5 shadow-2xl transition-all duration-900 delay-500 ease-[cubic-bezier(0.22,1,0.36,1)] hover:border-[#FFC900]/70 z-20 block focus:outline-none focus-visible:outline-2 focus-visible:outline-[#FFC900] focus-visible:outline-offset-2 ${
                 isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[60px]'
               }`}
               style={{
@@ -229,7 +231,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo, onSelectProject })
                         onError={(e) => {
                           const target = e.currentTarget;
                           if (project.url && !target.src.includes('thum.io')) {
-                            target.src = `https://image.thum.io/get/width/1400/${project.url}`;
+                            target.src = `https://image.thum.io/get/width/1400/crop/875/${project.url}`;
                           }
                         }}
                         alt={`${project.title} live screenshot`}
@@ -244,7 +246,8 @@ export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo, onSelectProject })
                   ))}
                 </div>
               </div>
-            </div>
+              <span className="sr-only"> (opens in a new tab)</span>
+            </a>
 
             {/* Three floating pill chips */}
             {/* Chip 1: WooCommerce */}

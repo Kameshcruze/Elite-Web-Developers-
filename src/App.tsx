@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { ALL_WORKS, WorkProject } from './works';
 import { ScrollProgressBar } from './components/ScrollProgressBar';
 import { CustomCursor } from './components/CustomCursor';
 import { Navbar } from './components/Navbar';
@@ -13,7 +12,6 @@ import { ContactCTA } from './components/ContactCTA';
 import { Footer } from './components/Footer';
 import { ContactModal } from './components/ContactModal';
 import { IntroVideoModal } from './components/IntroVideoModal';
-import { ProjectViewerModal } from './components/ProjectViewerModal';
 import { WorksPage } from './components/WorksPage';
 
 export default function App() {
@@ -21,28 +19,13 @@ export default function App() {
   const [isContactOpen, setIsContactOpen] = useState(false);
   const [selectedService, setSelectedService] = useState<string | undefined>(undefined);
   const [isIntroVideoOpen, setIsIntroVideoOpen] = useState(false);
-  const [activeViewerProject, setActiveViewerProject] = useState<WorkProject | null>(null);
 
-  // Parse and sync hash route
+  // Parse and sync hash route (#/works or home)
   useEffect(() => {
     const handleHashRoute = () => {
       const hash = window.location.hash;
-
       if (hash.startsWith('#/works')) {
         setCurrentRoute('works');
-        const slug = hash.replace('#/works/', '').replace('#/works', '').trim();
-        if (slug) {
-          const found = ALL_WORKS.find((p) => p.slug === slug);
-          if (found) {
-            setActiveViewerProject(found);
-          }
-        }
-      } else if (hash.startsWith('#project=')) {
-        const slug = hash.replace('#project=', '').trim();
-        const found = ALL_WORKS.find((p) => p.slug === slug);
-        if (found) {
-          setActiveViewerProject(found);
-        }
       } else {
         setCurrentRoute('home');
       }
@@ -89,14 +72,6 @@ export default function App() {
     setSelectedService(undefined);
   };
 
-  const handleSelectProject = (project: WorkProject) => {
-    setActiveViewerProject(project);
-  };
-
-  const handleCloseViewer = () => {
-    setActiveViewerProject(null);
-  };
-
   return (
     <div className="min-h-screen bg-[#08090B] text-[#F5F3EF] selection:bg-[#FFC900] selection:text-[#08090B] font-['Poppins',system-ui,sans-serif] antialiased overflow-x-hidden">
       {/* 3px scroll progress indicator */}
@@ -117,7 +92,6 @@ export default function App() {
         {currentRoute === 'works' ? (
           /* Works Page (#/works) */
           <WorksPage
-            onSelectProject={handleSelectProject}
             onOpenContact={() => handleOpenContact()}
           />
         ) : (
@@ -126,7 +100,6 @@ export default function App() {
             {/* Hero Section with Live Screenshot Carousel and Cutout */}
             <Hero
               onOpenIntroVideo={() => setIsIntroVideoOpen(true)}
-              onSelectProject={handleSelectProject}
             />
 
             {/* Infinite Capability Strip Marquee */}
@@ -134,7 +107,6 @@ export default function App() {
 
             {/* Selected Work Section (Home shows 3 featured works) */}
             <Work
-              onSelectProject={handleSelectProject}
               onNavigateToWorks={() => handleNavigate('works')}
             />
 
@@ -155,13 +127,6 @@ export default function App() {
           </>
         )}
       </main>
-
-      {/* Project Viewer Modal (Full screen, desktop/tablet/mobile toggle, prev/next arrows) */}
-      <ProjectViewerModal
-        project={activeViewerProject}
-        onClose={handleCloseViewer}
-        onSelectProject={handleSelectProject}
-      />
 
       {/* Project Inquiry Modal */}
       <ContactModal

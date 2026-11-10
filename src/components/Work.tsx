@@ -3,11 +3,10 @@ import { FEATURED_WORKS, ProjectItem } from '../content';
 import { WorkCard } from './WorkCard';
 
 interface WorkProps {
-  onSelectProject: (project: ProjectItem) => void;
   onNavigateToWorks?: () => void;
 }
 
-export const Work: React.FC<WorkProps> = ({ onSelectProject, onNavigateToWorks }) => {
+export const Work: React.FC<WorkProps> = ({ onNavigateToWorks }) => {
   const card01 = FEATURED_WORKS[0]; // bunt-india
   const card02 = FEATURED_WORKS[1]; // the-fat-cookie-chef
   const card03 = FEATURED_WORKS[2]; // virukshaa-events
@@ -40,7 +39,6 @@ export const Work: React.FC<WorkProps> = ({ onSelectProject, onNavigateToWorks }
             project={card01}
             numberPrefix="01"
             isFeature={true}
-            onSelectProject={onSelectProject}
           />
         )}
         {card02 && (
@@ -49,7 +47,6 @@ export const Work: React.FC<WorkProps> = ({ onSelectProject, onNavigateToWorks }
             project={card02}
             numberPrefix="02"
             isFeature={false}
-            onSelectProject={onSelectProject}
           />
         )}
         {card03 && (
@@ -58,7 +55,6 @@ export const Work: React.FC<WorkProps> = ({ onSelectProject, onNavigateToWorks }
             project={card03}
             numberPrefix="03"
             isFeature={false}
-            onSelectProject={onSelectProject}
           />
         )}
       </div>

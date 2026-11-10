@@ -36,7 +36,7 @@ test('works integrity: all 11 projects exist and removed projects are deleted', 
     assert.ok(project.category, `category exists for ${project.title}`);
     assert.ok(Array.isArray(project.tags) && project.tags.length > 0);
     assert.ok(project.description);
-    assert.ok(project.defaultTab === 'live' || project.defaultTab === 'screenshot');
+    assert.ok(project.url && project.url.startsWith('http'), `valid url exists for ${project.title}`);
   }
 });
 

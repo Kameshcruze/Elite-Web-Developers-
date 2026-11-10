@@ -5,12 +5,10 @@ import { ContactCTA } from './ContactCTA';
 import { Footer } from './Footer';
 
 interface WorksPageProps {
-  onSelectProject: (project: WorkProject) => void;
   onOpenContact: () => void;
 }
 
 export const WorksPage: React.FC<WorksPageProps> = ({
-  onSelectProject,
   onOpenContact,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -112,7 +110,6 @@ export const WorksPage: React.FC<WorksPageProps> = ({
             return (
               <article
                 key={project.slug}
-                onClick={() => onSelectProject(project)}
                 className="group relative bg-[#14151A] border border-[rgba(245,243,239,0.14)] rounded-[20px] lg:rounded-[24px] p-4 sm:p-5 flex flex-col justify-between transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2 hover:border-[rgba(255,201,0,0.55)] hover:shadow-[0_24px_50px_rgba(0,0,0,0.6)] cursor-pointer"
               >
                 {/* Top: 16:10 Screenshot with hover scroll & floating 'Open' badge */}
@@ -135,13 +132,22 @@ export const WorksPage: React.FC<WorksPageProps> = ({
                       {project.category}
                     </div>
 
-                    {/* Title + Domain */}
+                    {/* Title + Domain with stretched link */}
                     <div className="flex items-start justify-between gap-2 mb-1.5">
                       <h3 className="text-[22px] lg:text-[26px] font-semibold text-[#F5F3EF] leading-tight tracking-[-0.6px]">
-                        {project.title}
+                        <a
+                          href={project.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Open ${project.title} in a new tab`}
+                          className="after:absolute after:inset-0 after:z-10 focus:outline-none focus-visible:outline-2 focus-visible:outline-[#FFC900] focus-visible:outline-offset-2 rounded-sm"
+                        >
+                          {project.title}
+                          <span className="sr-only"> (opens in a new tab)</span>
+                        </a>
                       </h3>
                       {project.featured && (
-                        <span className="flex-shrink-0 px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider bg-[#FFC900]/15 text-[#FFC900] border border-[#FFC900]/30 mt-1">
+                        <span className="relative z-20 pointer-events-none flex-shrink-0 px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider bg-[#FFC900]/15 text-[#FFC900] border border-[#FFC900]/30 mt-1">
                           Featured
                         </span>
                       )}
@@ -160,7 +166,7 @@ export const WorksPage: React.FC<WorksPageProps> = ({
                     </p>
 
                     {/* Tag Pills */}
-                    <div className="flex flex-wrap gap-1.5 mb-5">
+                    <div className="relative z-20 pointer-events-none flex flex-wrap gap-1.5 mb-5">
                       {project.tags.map((tag) => (
                         <span
                           key={tag}
@@ -175,25 +181,24 @@ export const WorksPage: React.FC<WorksPageProps> = ({
 
                 {/* Card Action Buttons Row: Primary 'Experience live' + Small '↗' new-tab button */}
                 <div className="pt-3 border-t border-[rgba(245,243,239,0.1)] flex items-center justify-between gap-3">
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectProject(project);
-                    }}
-                    className="flex-1 inline-flex items-center justify-center gap-2 bg-[#FFC900] text-[#08090B] font-medium text-[13.5px] py-2.5 px-4 rounded-full transition-all duration-200 hover:brightness-105 active:scale-[0.98]"
+                  <a
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Experience live site for ${project.title} (opens in a new tab)`}
+                    className="relative z-20 flex-1 inline-flex items-center justify-center gap-2 bg-[#FFC900] text-[#08090B] font-medium text-[13.5px] py-2.5 px-4 rounded-full transition-all duration-200 hover:brightness-105 active:scale-[0.98] focus:outline-none focus-visible:outline-2 focus-visible:outline-[#FFC900] focus-visible:outline-offset-2"
                   >
                     <span>Experience live</span>
-                    <span>→</span>
-                  </button>
+                    <span aria-hidden="true">→</span>
+                    <span className="sr-only"> (opens in a new tab)</span>
+                  </a>
 
                   {project.url && (
                     <a
                       href={project.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="w-10 h-10 rounded-full border border-[rgba(245,243,239,0.25)] text-[#F5F3EF] hover:border-[#FFC900] hover:text-[#FFC900] flex items-center justify-center transition-colors flex-shrink-0"
+                      className="relative z-20 w-10 h-10 rounded-full border border-[rgba(245,243,239,0.25)] text-[#F5F3EF] hover:border-[#FFC900] hover:text-[#FFC900] flex items-center justify-center transition-colors flex-shrink-0 focus:outline-none focus-visible:outline-2 focus-visible:outline-[#FFC900] focus-visible:outline-offset-2"
                       aria-label={`Open ${project.title} directly in new tab`}
                       title="Open website in new tab"
                     >
@@ -206,10 +211,12 @@ export const WorksPage: React.FC<WorksPageProps> = ({
                         strokeWidth="2"
                         strokeLinecap="round"
                         strokeLinejoin="round"
+                        aria-hidden="true"
                       >
                         <line x1="7" y1="17" x2="17" y2="7"></line>
                         <polyline points="7 7 17 7 17 17"></polyline>
                       </svg>
+                      <span className="sr-only"> (opens in a new tab)</span>
                     </a>
                   )}
                 </div>

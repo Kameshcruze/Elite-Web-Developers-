@@ -16,7 +16,7 @@ export const ProjectScreenshot: React.FC<ProjectScreenshotProps> = ({
 
   const localSrc = `/projects/${project.slug}.png`;
   const thumSrc = project.url
-    ? `https://image.thum.io/get/width/1400/${project.url}`
+    ? `https://image.thum.io/get/width/1400/crop/875/${project.url}`
     : '';
 
   const handleError = () => {
