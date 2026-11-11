@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CONTACT_INFO, validateContactForm, ValidationErrors } from '../content';
+import { CONTACT_INFO, validateContactForm, buildWhatsAppContactUrl, ValidationErrors } from '../content';
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -23,6 +23,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
   const [errors, setErrors] = useState<ValidationErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [whatsappLink, setWhatsappLink] = useState('');
   const modalRef = useRef<HTMLDivElement>(null);
   const firstInputRef = useRef<HTMLInputElement>(null);
 
@@ -66,11 +67,16 @@ export const ContactModal: React.FC<ContactModalProps> = ({
     setErrors({});
     setIsSubmitting(true);
 
-    // Simulate reliable submission
+    const url = buildWhatsAppContactUrl(CONTACT_INFO.phone, formData);
+    setWhatsappLink(url);
+
+    // Open WhatsApp in new tab with the filled details
+    window.open(url, '_blank', 'noopener,noreferrer');
+
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitted(true);
-    }, 600);
+    }, 400);
   };
 
   return (
@@ -111,17 +117,30 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               </svg>
             </div>
             <h3 className="text-[28px] font-semibold text-[#F5F3EF] tracking-[-1px] mb-3">
-              Message received<span className="text-[#FFC900]">.</span>
+              Message sent to WhatsApp<span className="text-[#FFC900]">.</span>
             </h3>
-            <p className="text-[15px] text-[rgba(245,243,239,0.68)] leading-[1.7] max-w-md mx-auto mb-8">
-              Thank you for reaching out. We will review your project details and get in touch with you shortly.
+            <p className="text-[15px] text-[rgba(245,243,239,0.68)] leading-[1.7] max-w-md mx-auto mb-6">
+              Your inquiry has been formulated with all project details and opened in WhatsApp (+91 95852 62522). If it did not open automatically, click the button below.
             </p>
-            <button
-              onClick={onClose}
-              className="px-[26px] py-[14px] bg-[#FFC900] text-[#08090B] font-medium text-[15px] rounded-full inline-flex items-center gap-[10px] hover:translate-y-[-2px] transition-transform"
-            >
-              Back to site →
-            </button>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              {whatsappLink && (
+                <a
+                  href={whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-[26px] py-[13px] bg-[#FFC900] text-[#08090B] font-medium text-[15px] rounded-full inline-flex items-center gap-[8px] hover:translate-y-[-2px] transition-transform"
+                >
+                  <span>Open in WhatsApp</span>
+                  <span>↗</span>
+                </a>
+              )}
+              <button
+                onClick={onClose}
+                className="px-[24px] py-[13px] border border-[rgba(245,243,239,0.3)] text-[#F5F3EF] font-medium text-[14px] rounded-full hover:bg-[#F5F3EF]/10 transition-colors"
+              >
+                Back to site
+              </button>
+            </div>
           </div>
         ) : (
           <div>
@@ -223,9 +242,12 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-[14px] px-[26px] bg-[#FFC900] text-[#08090B] font-medium text-[15px] rounded-full inline-flex items-center justify-center gap-[10px] hover:translate-y-[-2px] transition-all disabled:opacity-50"
+                  className="w-full py-[14px] px-[26px] bg-[#FFC900] text-[#08090B] font-semibold text-[15px] rounded-full inline-flex items-center justify-center gap-[10px] hover:translate-y-[-2px] hover:shadow-[0_10px_25px_rgba(255,201,0,0.35)] transition-all disabled:opacity-50 cursor-pointer active:scale-[0.98] focus:outline-none focus-visible:outline-2 focus-visible:outline-[#FFC900] focus-visible:outline-offset-2"
                 >
-                  {isSubmitting ? 'Sending inquiry...' : 'Submit project inquiry →'}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="flex-shrink-0">
+                    <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2M12.05 3.67C14.25 3.67 16.31 4.53 17.87 6.09C19.42 7.65 20.28 9.72 20.28 11.92C20.28 16.46 16.58 20.15 12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.43 19.65L5.26 16.61L5.06 16.29C4.24 14.99 3.8 13.47 3.8 11.91C3.81 7.37 7.5 3.67 12.05 3.67M9.11 7.14C8.93 7.14 8.64 7.21 8.39 7.48C8.14 7.75 7.44 8.41 7.44 9.75C7.44 11.09 8.42 12.38 8.55 12.56C8.69 12.74 10.47 15.48 13.2 16.66C13.85 16.94 14.36 17.11 14.75 17.24C15.41 17.45 16.01 17.42 16.48 17.35C17.01 17.27 18.1 16.69 18.33 16.05C18.56 15.41 18.56 14.86 18.49 14.75C18.42 14.64 18.24 14.58 17.97 14.44C17.7 14.31 16.38 13.66 16.14 13.57C15.9 13.48 15.73 13.44 15.55 13.71C15.38 13.98 14.88 14.58 14.73 14.75C14.58 14.93 14.44 14.95 14.17 14.81C13.9 14.68 13.03 14.39 12 13.47C11.2 12.76 10.66 11.88 10.51 11.62C10.36 11.36 10.49 11.21 10.63 11.08C10.75 10.96 10.9 10.77 11.04 10.61C11.17 10.45 11.22 10.33 11.31 10.15C11.4 9.97 11.36 9.82 11.29 9.68C11.22 9.55 10.73 8.34 10.52 7.85C10.32 7.37 10.12 7.43 9.97 7.42C9.83 7.41 9.66 7.41 9.48 7.41C9.31 7.41 9.11 7.48 9.11 7.14Z" />
+                  </svg>
+                  <span>{isSubmitting ? 'Opening WhatsApp...' : 'Submit & Send on WhatsApp →'}</span>
                 </button>
               </div>
             </form>

@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
   validateContactForm,
+  buildWhatsAppContactUrl,
   PROJECTS,
   ALL_WORKS,
   FEATURED_WORKS,
@@ -92,4 +93,22 @@ test('contact info contains required Bangalore & Karur locations and updated con
   assert.ok(CONTACT_INFO.location.includes('Karur'));
   assert.equal(CONTACT_INFO.phone, '+91 95852 62522');
   assert.equal(CONTACT_INFO.email, 'support.elitewebdevelopers@gmail.com');
+});
+
+test('buildWhatsAppContactUrl builds correct wa.me link with form details', () => {
+  const url = buildWhatsAppContactUrl(CONTACT_INFO.phone, {
+    name: 'Anand Kumar',
+    email: 'anand@example.com',
+    phone: '9876543210',
+    service: 'Online store',
+    message: 'Need a Shopify store for apparel.',
+  });
+
+  assert.ok(url.startsWith('https://wa.me/919585262522?text='));
+  const decoded = decodeURIComponent(url);
+  assert.ok(decoded.includes('Anand Kumar'));
+  assert.ok(decoded.includes('anand@example.com'));
+  assert.ok(decoded.includes('9876543210'));
+  assert.ok(decoded.includes('Online store'));
+  assert.ok(decoded.includes('Need a Shopify store for apparel.'));
 });

@@ -205,8 +205,37 @@ export function validateContactForm(data: ContactFormData): {
     errors.message = "Please describe your project or request";
   }
 
-  return {
-    isValid: Object.keys(errors).length === 0,
-    errors,
-  };
+    return {
+      isValid: Object.keys(errors).length === 0,
+      errors,
+    };
+  }
+
+/**
+ * Builds a universal WhatsApp link pre-filled with project inquiry details
+ */
+export function buildWhatsAppContactUrl(
+  phone: string,
+  data: {
+    name: string;
+    email: string;
+    phone: string;
+    service?: string;
+    message: string;
+  }
+): string {
+  const cleanPhone = phone.replace(/[^0-9]/g, '');
+  const lines = [
+    `*New Project Inquiry - Elite Web Developers*`,
+    ``,
+    `*Name:* ${data.name.trim()}`,
+    `*Email:* ${data.email.trim()}`,
+    `*Phone:* ${data.phone.trim()}`,
+    `*Project Type:* ${data.service || 'General Inquiry'}`,
+    ``,
+    `*Project Brief:*`,
+    `${data.message.trim()}`,
+  ];
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(lines.join('\n'))}`;
 }
+
