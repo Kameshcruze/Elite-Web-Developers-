@@ -151,12 +151,14 @@ export const PROCESS_STEPS: ProcessStep[] = [
   },
 ];
 
-/* Updated Toolkit Chips per instruction 1 (added Shopify) */
+/* Updated Toolkit Chips per instruction 1 (added Shopify, React, Python) */
 export const TOOLKIT_CHIPS: string[] = [
   "Shopify",
   "WordPress",
   "WooCommerce",
   "Elementor",
+  "React",
+  "Python",
   "Custom JavaScript",
   "Custom CSS",
   "HTML5",

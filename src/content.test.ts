@@ -52,9 +52,13 @@ test('capability strip and toolkit chips reflect updated requirements', () => {
     'CUSTOM DASHBOARDS',
   ]);
 
-  // Check Shopify chip is in toolkit
+  // Check Shopify, React, and Python chips in toolkit
   assert.ok(TOOLKIT_CHIPS.includes('Shopify'));
-  assert.equal(TOOLKIT_CHIPS.length, 10);
+  const elementorIndex = TOOLKIT_CHIPS.indexOf('Elementor');
+  assert.ok(elementorIndex >= 0);
+  assert.equal(TOOLKIT_CHIPS[elementorIndex + 1], 'React');
+  assert.equal(TOOLKIT_CHIPS[elementorIndex + 2], 'Python');
+  assert.equal(TOOLKIT_CHIPS.length, 12);
 });
 
 test('content integrity: services and process steps match specs', () => {
