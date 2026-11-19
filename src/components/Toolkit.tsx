@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 import { TOOLKIT_CHIPS } from '../content';
 
 export const Toolkit: React.FC = () => {
@@ -26,6 +27,17 @@ export const Toolkit: React.FC = () => {
             {chip}
           </span>
         ))}
+      </div>
+
+      {/* Short internal link to /about */}
+      <div className="mt-7 lg:mt-10 flex justify-end">
+        <Link
+          to="/about"
+          className="group inline-flex items-center gap-2 text-[14px] lg:text-[15px] font-medium text-[rgba(245,243,239,0.75)] hover:text-[#FFC900] transition-colors"
+        >
+          <span>Learn more about our studio</span>
+          <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+        </Link>
       </div>
     </section>
   );

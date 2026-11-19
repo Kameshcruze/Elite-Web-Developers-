@@ -5,16 +5,25 @@ interface ProjectScreenshotProps {
   project: ProjectItem;
   className?: string;
   isInteractive?: boolean;
+  eager?: boolean;
 }
 
 export const ProjectScreenshot: React.FC<ProjectScreenshotProps> = ({
   project,
   className = '',
+  eager = false,
 }) => {
-  // Try local first, then thum.io, then styled fallback
-  const [imgStage, setImgStage] = useState<'local' | 'thum' | 'fallback'>('local');
+  // Skip local request when no local screenshot file exists (prevents 404 console errors)
+  const initialStage: 'local' | 'thum' | 'fallback' = project.hasLocalScreenshot
+    ? 'local'
+    : project.url
+      ? 'thum'
+      : 'fallback';
 
-  const localSrc = `/projects/${project.slug}.png`;
+  const [imgStage, setImgStage] = useState<'local' | 'thum' | 'fallback'>(initialStage);
+
+  const localWebpSrc = `/projects/${project.slug}.webp`;
+  const localPngSrc = `/projects/${project.slug}.png`;
   const thumSrc = project.url
     ? `https://image.thum.io/get/width/1400/crop/875/${project.url}`
     : '';
@@ -30,8 +39,6 @@ export const ProjectScreenshot: React.FC<ProjectScreenshotProps> = ({
       setImgStage('fallback');
     }
   };
-
-  const currentSrc = imgStage === 'local' ? localSrc : thumSrc;
 
   if (imgStage === 'fallback' || !project.url) {
     return (
@@ -71,14 +78,32 @@ export const ProjectScreenshot: React.FC<ProjectScreenshotProps> = ({
 
   return (
     <div className={`relative w-full h-full overflow-hidden rounded-[14px] lg:rounded-[18px] bg-[#14151A] ${className}`}>
-      {/* Scrollable image on card hover */}
-      <img
-        src={currentSrc}
-        alt={`${project.title} live website screenshot`}
-        onError={handleError}
-        className="w-full h-[128%] object-cover object-top transition-transform duration-[4000ms] ease-out group-hover:-translate-y-[25%]"
-        loading="lazy"
-      />
+      {imgStage === 'local' ? (
+        <picture>
+          <source srcSet={localWebpSrc} type="image/webp" />
+          <img
+            src={localPngSrc}
+            alt={`${project.title} live website screenshot`}
+            width={project.screenshotWidth}
+            height={project.screenshotHeight}
+            onError={handleError}
+            className="w-full h-[128%] object-cover object-top transition-transform duration-[4000ms] ease-out group-hover:-translate-y-[25%]"
+            loading={eager ? 'eager' : 'lazy'}
+            decoding="async"
+          />
+        </picture>
+      ) : (
+        <img
+          src={thumSrc}
+          alt={`${project.title} live website screenshot`}
+          width={project.screenshotWidth}
+          height={project.screenshotHeight}
+          onError={handleError}
+          className="w-full h-[128%] object-cover object-top transition-transform duration-[4000ms] ease-out group-hover:-translate-y-[25%]"
+          loading={eager ? 'eager' : 'lazy'}
+          decoding="async"
+        />
+      )}
 
       {/* Subtle top glare/gradient */}
       <div

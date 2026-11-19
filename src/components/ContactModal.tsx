@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { CONTACT_INFO, validateContactForm, buildWhatsAppContactUrl, ValidationErrors } from '../content';
+import { Link } from 'react-router';
+import {
+  CONTACT_INFO,
+  SERVICE_FORM_OPTIONS,
+  normalizeServiceOption,
+  validateContactForm,
+  buildWhatsAppContactUrl,
+  ValidationErrors,
+} from '../content';
 
 interface ContactModalProps {
   isOpen: boolean;
@@ -16,7 +24,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
     name: '',
     email: '',
     phone: '',
-    service: preselectedService || 'Business website',
+    service: normalizeServiceOption(preselectedService),
     message: '',
   });
 
@@ -28,9 +36,10 @@ export const ContactModal: React.FC<ContactModalProps> = ({
   const firstInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (preselectedService) {
-      setFormData((prev) => ({ ...prev, service: preselectedService }));
-    }
+    setFormData((prev) => ({
+      ...prev,
+      service: normalizeServiceOption(preselectedService),
+    }));
   }, [preselectedService]);
 
   useEffect(() => {
@@ -100,7 +109,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center text-[#F5F3EF] hover:text-[#FFC900] border border-[rgba(245,243,239,0.14)] hover:border-[#FFC900] transition-colors"
+          className="absolute top-6 right-6 w-10 h-10 rounded-full flex items-center justify-center text-[#F5F3EF] hover:text-[#FFC900] border border-[rgba(245,243,239,0.14)] hover:border-[#FFC900] transition-colors cursor-pointer"
           aria-label="Close modal"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -136,7 +145,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               )}
               <button
                 onClick={onClose}
-                className="px-[24px] py-[13px] border border-[rgba(245,243,239,0.3)] text-[#F5F3EF] font-medium text-[14px] rounded-full hover:bg-[#F5F3EF]/10 transition-colors"
+                className="px-[24px] py-[13px] border border-[rgba(245,243,239,0.3)] text-[#F5F3EF] font-medium text-[14px] rounded-full hover:bg-[#F5F3EF]/10 transition-colors cursor-pointer"
               >
                 Back to site
               </button>
@@ -154,7 +163,7 @@ export const ContactModal: React.FC<ContactModalProps> = ({
               Let&apos;s build something great<span className="text-[#FFC900]">.</span>
             </h2>
             <p className="text-[14px] text-[rgba(245,243,239,0.68)] leading-[1.6] mb-6">
-              Tell us about your business or project in Tamil Nadu. We typically respond within 24 hours.
+              Tell us about your business or project in Bangalore, Karur, or anywhere in Tamil Nadu. We typically respond within 24 hours.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -216,10 +225,11 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                   onChange={(e) => setFormData({ ...formData, service: e.target.value })}
                   className="w-full px-4 py-3 rounded-[12px] bg-[#1B1C21] text-[#F5F3EF] border border-[rgba(245,243,239,0.14)] focus:border-[#FFC900] text-[14px] transition-colors"
                 >
-                  <option value="Business website">Business Website</option>
-                  <option value="Online store">Online Store (WooCommerce / WordPress)</option>
-                  <option value="Web apps and dashboards">Custom Web App or Dashboard</option>
-                  <option value="Care and support">Care & Speed Tuning</option>
+                  {SERVICE_FORM_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -249,10 +259,21 @@ export const ContactModal: React.FC<ContactModalProps> = ({
                   </svg>
                   <span>{isSubmitting ? 'Opening WhatsApp...' : 'Submit & Send on WhatsApp →'}</span>
                 </button>
+                <p className="text-[11.5px] text-[rgba(245,243,239,0.5)] text-center mt-2.5 leading-[1.6]">
+                  Submitting opens WhatsApp with your message pre-filled. See our{' '}
+                  <Link
+                    to="/privacy-policy"
+                    onClick={onClose}
+                    className="text-[#FFC900] hover:underline"
+                  >
+                    Privacy Policy
+                  </Link>
+                  .
+                </p>
               </div>
             </form>
 
-            <div className="mt-6 pt-4 border-t border-[rgba(245,243,239,0.14)] flex flex-wrap items-center justify-between text-[12px] text-[rgba(245,243,239,0.5)]">
+            <div className="mt-5 pt-4 border-t border-[rgba(245,243,239,0.14)] flex flex-wrap items-center justify-between gap-2 text-[12px] text-[rgba(245,243,239,0.5)]">
               <span>Direct WhatsApp: {CONTACT_INFO.phone}</span>
               <span>Location: {CONTACT_INFO.location}</span>
             </div>

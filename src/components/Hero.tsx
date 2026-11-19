@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { HERO_CONTENT, FEATURED_WORKS, ProjectItem } from '../content';
+import { HERO_CONTENT, FEATURED_WORKS } from '../content';
 
 interface HeroProps {
   onOpenIntroVideo: () => void;
@@ -47,7 +47,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo }) => {
   const circleParallax = scrollY * 0.15;
   const mockParallax = scrollY * 0.08;
 
-  // Split desktop H1 into 4 lines
+  // Single-DOM H1 split into 4 masked lines on desktop and natural flow on mobile/tablet
   const h1Lines = [
     { text: 'Websites that', id: 'l1' },
     { text: 'work as', id: 'l2' },
@@ -76,15 +76,14 @@ export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo }) => {
             />
           </div>
 
-          {/* H1 Headline */}
-          <h1 className="mt-[18px] lg:mt-[26px]">
-            {/* Desktop view: 4 masked lines */}
-            <span className="hidden lg:block text-[72px] xl:text-[96px] 2xl:text-[104px] font-semibold leading-[1.0] tracking-[-3px] xl:tracking-[-4px] text-[#F5F3EF]">
-              {h1Lines.map((line, idx) => (
-                <span key={line.id} className="block overflow-hidden">
+          {/* Single H1 Headline (no duplicate text in DOM) */}
+          <h1 className="mt-[18px] lg:mt-[26px] text-[44px] sm:text-[64px] lg:text-[72px] xl:text-[96px] 2xl:text-[104px] font-semibold leading-[1.02] lg:leading-[1.0] tracking-[-1.8px] lg:tracking-[-3px] xl:tracking-[-4px] text-[#F5F3EF]">
+            {h1Lines.map((line, idx) => (
+              <React.Fragment key={line.id}>
+                <span className="inline lg:block lg:overflow-hidden">
                   <span
-                    className={`block transition-transform duration-900 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-                      isLoaded ? 'translate-y-0' : 'translate-y-full'
+                    className={`inline lg:block lg:transition-transform lg:duration-900 lg:ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                      isLoaded ? 'lg:translate-y-0' : 'lg:translate-y-full'
                     }`}
                     style={{ transitionDelay: `${200 + idx * 100}ms` }}
                   >
@@ -92,13 +91,9 @@ export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo }) => {
                     {line.hasPeriod && <span className="text-[#FFC900]">.</span>}
                   </span>
                 </span>
-              ))}
-            </span>
-
-            {/* Mobile / Tablet view */}
-            <span className="block lg:hidden text-[44px] sm:text-[64px] font-semibold leading-[1.02] tracking-[-1.8px] text-[#F5F3EF]">
-              Websites that work as hard as you do<span className="text-[#FFC900]">.</span>
-            </span>
+                {!line.hasPeriod && <span className="lg:hidden"> </span>}
+              </React.Fragment>
+            ))}
           </h1>
 
           {/* Paragraph */}
@@ -127,7 +122,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo }) => {
             {/* Ghost button with inline SVG play icon in #F5F3EF */}
             <button
               onClick={onOpenIntroVideo}
-              className="group w-full sm:w-auto inline-flex items-center justify-center gap-[10px] bg-transparent text-[#F5F3EF] font-medium text-[13px] lg:text-[15px] px-[20px] py-[11px] lg:px-[26px] lg:py-[14px] rounded-full border border-[rgba(245,243,239,0.4)] transition-all duration-200 ease-out hover:bg-[#F5F3EF] hover:text-[#08090B] hover:border-white active:scale-[0.97]"
+              className="group w-full sm:w-auto inline-flex items-center justify-center gap-[10px] bg-transparent text-[#F5F3EF] font-medium text-[13px] lg:text-[15px] px-[20px] py-[11px] lg:px-[26px] lg:py-[14px] rounded-full border border-[rgba(245,243,239,0.4)] transition-all duration-200 ease-out hover:bg-[#F5F3EF] hover:text-[#08090B] hover:border-white active:scale-[0.97] cursor-pointer"
             >
               <svg
                 width="14"
@@ -144,11 +139,9 @@ export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo }) => {
           </div>
         </div>
 
-        {/* Right Column: Hero Visual Container (strict min-w-0, scaled with clamp, stays inside column) */}
+        {/* Right Column: Hero Visual Container */}
         <div className="min-w-0 relative flex items-center justify-center lg:justify-end mt-4 lg:mt-0 z-0">
-          <div
-            className="relative w-full max-w-[320px] sm:max-w-[420px] lg:max-w-[500px] xl:max-w-[540px] aspect-square"
-          >
+          <div className="relative w-full max-w-[320px] sm:max-w-[420px] lg:max-w-[500px] xl:max-w-[540px] aspect-square">
             {/* Solid yellow circle positioned safely in upper-right */}
             <div
               className={`absolute right-0 top-0 w-[80%] h-[80%] rounded-full bg-[#FFC900] transition-all duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] ${
@@ -159,7 +152,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo }) => {
               }}
             >
               <div className="relative w-full h-full rounded-full animate-circle-breathe overflow-visible flex items-end justify-center">
-                {/* Developer Cutout: bottom-aligned and slightly overlapping the top edge of the circle (85% of circle) */}
+                {/* Developer Cutout: WebP with PNG fallback, eager + fetchPriority high */}
                 <div
                   className={`absolute bottom-0 z-10 transition-all duration-900 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                     isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[40px]'
@@ -171,11 +164,19 @@ export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo }) => {
                     transitionDelay: '400ms',
                   }}
                 >
-                  <img
-                    src="/hero-circle.png"
-                    alt="Elite Web Developers craftsman"
-                    className="w-full h-full object-contain object-bottom pointer-events-none drop-shadow-[0_15px_30px_rgba(0,0,0,0.4)] animate-browser-float"
-                  />
+                  <picture>
+                    <source srcSet="/hero-circle.webp" type="image/webp" />
+                    <img
+                      src="/hero-circle.png"
+                      alt="Elite Web Developers craftsman"
+                      width={1024}
+                      height={1024}
+                      loading="eager"
+                      fetchPriority="high"
+                      decoding="async"
+                      className="w-full h-full object-contain object-bottom pointer-events-none drop-shadow-[0_15px_30px_rgba(0,0,0,0.4)] animate-browser-float"
+                    />
+                  </picture>
                 </div>
               </div>
             </div>
@@ -198,20 +199,17 @@ export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo }) => {
               <div className="w-full h-full flex flex-col justify-between animate-browser-float rounded-[10px] overflow-hidden">
                 {/* Browser top row: dots + domain pill */}
                 <div className="flex items-center justify-between pb-2 mb-1 border-b border-[rgba(245,243,239,0.1)]">
-                  {/* Three window dots */}
                   <div className="flex items-center gap-[6px]">
                     <span className="w-[8px] h-[8px] rounded-full bg-[#FFC900]" />
                     <span className="w-[8px] h-[8px] rounded-full bg-[#F5F3EF]/35" />
                     <span className="w-[8px] h-[8px] rounded-full bg-[#F5F3EF]/35" />
                   </div>
 
-                  {/* Domain pill updating per slide */}
                   <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#1B1C21] text-[10.5px] lg:text-[11.5px] font-mono text-[#FFC900]">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#FFC900]" />
                     <span>{activeDomain}</span>
                   </div>
 
-                  {/* Click affordance indicator */}
                   <span className="text-[10px] text-[rgba(245,243,239,0.5)] group-hover/browser:text-[#FFC900] transition-colors">
                     Click to view ↗
                   </span>
@@ -226,17 +224,24 @@ export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo }) => {
                         idx === carouselIndex ? 'opacity-100 z-10 pointer-events-auto' : 'opacity-0 z-0 pointer-events-none'
                       }`}
                     >
-                      <img
-                        src={`/projects/${project.slug}.png`}
-                        onError={(e) => {
-                          const target = e.currentTarget;
-                          if (project.url && !target.src.includes('thum.io')) {
-                            target.src = `https://image.thum.io/get/width/1400/crop/875/${project.url}`;
-                          }
-                        }}
-                        alt={`${project.title} live screenshot`}
-                        className="w-full h-full object-cover object-top"
-                      />
+                      <picture>
+                        <source srcSet={`/projects/${project.slug}.webp`} type="image/webp" />
+                        <img
+                          src={`/projects/${project.slug}.png`}
+                          width={project.screenshotWidth}
+                          height={project.screenshotHeight}
+                          loading={idx === 0 ? 'eager' : 'lazy'}
+                          decoding="async"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            if (project.url && !target.src.includes('thum.io')) {
+                              target.src = `https://image.thum.io/get/width/1400/crop/875/${project.url}`;
+                            }
+                          }}
+                          alt={`${project.title} live screenshot`}
+                          className="w-full h-full object-cover object-top"
+                        />
+                      </picture>
                       <div className="absolute inset-0 bg-gradient-to-t from-[#08090B]/60 via-transparent to-transparent flex items-end p-2.5">
                         <span className="text-[12px] font-semibold text-[#F5F3EF] drop-shadow-md">
                           {project.title} <span className="text-[#FFC900]">· {project.category}</span>
@@ -250,7 +255,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo }) => {
             </a>
 
             {/* Three floating pill chips */}
-            {/* Chip 1: WooCommerce */}
             <div
               className={`absolute top-2 right-[-8px] sm:right-0 z-30 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
                 isLoaded ? 'scale-100 opacity-100' : 'scale-80 opacity-0'
@@ -262,7 +266,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo }) => {
               </div>
             </div>
 
-            {/* Chip 2: Full-stack */}
             <div
               className={`absolute bottom-[-10px] left-[-8px] sm:left-[-12px] z-30 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
                 isLoaded ? 'scale-100 opacity-100' : 'scale-80 opacity-0'
@@ -274,7 +277,6 @@ export const Hero: React.FC<HeroProps> = ({ onOpenIntroVideo }) => {
               </div>
             </div>
 
-            {/* Chip 3: Custom dashboards */}
             <div
               className={`absolute bottom-[10px] right-[-10px] sm:right-[-6px] z-30 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] ${
                 isLoaded ? 'scale-100 opacity-100' : 'scale-80 opacity-0'

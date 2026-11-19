@@ -14,11 +14,11 @@ export type ProjectItem = WorkProject;
 export interface NavLink {
   label: string;
   href: string;
-  isRoute?: boolean;
 }
 
 export interface ServiceItem {
   number: string;
+  slug: string;
   title: string;
   description: string;
   inverted?: boolean;
@@ -56,15 +56,15 @@ export const CONTACT_INFO: ContactInfo = {
 };
 
 export const NAV_LINKS: NavLink[] = [
-  { label: "Works", href: "#/works", isRoute: true },
-  { label: "Services", href: "#services" },
-  { label: "Process", href: "#process" },
-  { label: "Stack", href: "#stack" },
-  { label: "Contact", href: "#contact" },
+  { label: "Works", href: "/works" },
+  { label: "Services", href: "/services" },
+  { label: "Process", href: "/process" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
 ];
 
 export const HERO_CONTENT = {
-  eyebrow: "ELITE WEB DEVELOPERS · Tamil Nadu",
+  eyebrow: "ELITE WEB DEVELOPERS · Bangalore & Karur",
   headline: "Websites that work as hard as you do.",
   paragraph:
     "Elite Web Developers designs and builds fast, reliable websites, online stores, and web apps for businesses across Bangalore, Karur, and Tamil Nadu.",
@@ -77,7 +77,7 @@ export const HERO_CONTENT = {
   ],
 };
 
-/* Updated Capability Strip per instruction 1 */
+/* Updated Capability Strip */
 export const CAPABILITIES: string[] = [
   "WORDPRESS",
   "SHOPIFY",
@@ -93,6 +93,7 @@ export const PROJECTS = ALL_WORKS;
 export const SERVICES: ServiceItem[] = [
   {
     number: "01",
+    slug: "business-websites",
     title: "Business websites",
     description:
       "Fast, mobile-first websites that help local businesses look credible and get found.",
@@ -100,13 +101,15 @@ export const SERVICES: ServiceItem[] = [
   },
   {
     number: "02",
+    slug: "online-stores",
     title: "Online stores",
     description:
-      "WordPress and WooCommerce shops with tailored product pages, bundles, and checkout.",
+      "Shopify, WordPress, and WooCommerce shops with tailored product pages, bundles, and checkout.",
     inverted: false,
   },
   {
     number: "03",
+    slug: "web-apps-and-dashboards",
     title: "Web apps and dashboards",
     description:
       "Custom tools, admin panels, and staff dashboards built around how you work.",
@@ -114,12 +117,39 @@ export const SERVICES: ServiceItem[] = [
   },
   {
     number: "04",
+    slug: "care-and-support",
     title: "Care and support",
     description:
       "Updates, fixes, speed tuning, and email setup after your site goes live.",
     inverted: true,
   },
 ];
+
+export const SERVICE_FORM_OPTIONS = [
+  { value: "Business websites", label: "Business Website" },
+  { value: "Online stores", label: "Online Store (Shopify / WooCommerce / WordPress)" },
+  { value: "Web apps and dashboards", label: "Custom Web App or Dashboard" },
+  { value: "Care and support", label: "Care & Speed Tuning" },
+] as const;
+
+/**
+ * Normalizes any service title or alias passed to ContactModal / ContactPage
+ * so the <select> always preselects the matching option cleanly.
+ */
+export function normalizeServiceOption(input?: string): string {
+  if (!input) return SERVICE_FORM_OPTIONS[0].value;
+  const normalized = input.trim().toLowerCase();
+  if (normalized.includes('store') || normalized.includes('shop') || normalized.includes('commerce')) {
+    return 'Online stores';
+  }
+  if (normalized.includes('app') || normalized.includes('dashboard') || normalized.includes('portal')) {
+    return 'Web apps and dashboards';
+  }
+  if (normalized.includes('care') || normalized.includes('support') || normalized.includes('speed')) {
+    return 'Care and support';
+  }
+  return 'Business websites';
+}
 
 export const PROCESS_STEPS: ProcessStep[] = [
   {
@@ -151,7 +181,6 @@ export const PROCESS_STEPS: ProcessStep[] = [
   },
 ];
 
-/* Updated Toolkit Chips per instruction 1 (added Shopify, React, Python) */
 export const TOOLKIT_CHIPS: string[] = [
   "Shopify",
   "WordPress",
@@ -207,11 +236,11 @@ export function validateContactForm(data: ContactFormData): {
     errors.message = "Please describe your project or request";
   }
 
-    return {
-      isValid: Object.keys(errors).length === 0,
-      errors,
-    };
-  }
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors,
+  };
+}
 
 /**
  * Builds a universal WhatsApp link pre-filled with project inquiry details
@@ -240,4 +269,3 @@ export function buildWhatsAppContactUrl(
   ];
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(lines.join('\n'))}`;
 }
-

@@ -1,0 +1,4 @@
+# Netlify / Cloudflare Pages static hosting config
+# Existing prerendered files (e.g. /about/index.html, /works/index.html) are served with HTTP 200 automatically.
+# Unknown paths return our custom 404 page with a real HTTP 404 status.
+/*  /404.html  404

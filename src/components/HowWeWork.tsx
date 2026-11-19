@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router';
 import { PROCESS_STEPS } from '../content';
 
 export const HowWeWork: React.FC = () => {
@@ -91,6 +92,17 @@ export const HowWeWork: React.FC = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Short internal link to /process */}
+      <div className="mt-7 lg:mt-10 flex justify-end">
+        <Link
+          to="/process"
+          className="group inline-flex items-center gap-2 text-[14px] lg:text-[15px] font-medium text-[rgba(245,243,239,0.75)] hover:text-[#FFC900] transition-colors"
+        >
+          <span>Learn more about our process</span>
+          <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+        </Link>
       </div>
     </section>
   );

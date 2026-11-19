@@ -64,7 +64,7 @@ export const IntroVideoModal: React.FC<IntroVideoModalProps> = ({
             <div className="w-2.5 h-2.5 rounded-full bg-[#F5F3EF]/35" />
             <div className="w-2.5 h-2.5 rounded-full bg-[#F5F3EF]/35" />
             <span className="text-[12px] text-[rgba(245,243,239,0.5)] font-mono ml-2">
-              intro_reel_coimbatore.mp4
+              studio_intro_preview.mp4
             </span>
           </div>
 
@@ -78,7 +78,7 @@ export const IntroVideoModal: React.FC<IntroVideoModalProps> = ({
               Studio Intro &amp; Craft Overview
             </h4>
             <p className="text-[14px] text-[rgba(245,243,239,0.68)] max-w-sm">
-              We design and build fast, reliable websites, WooCommerce stores, and custom dashboards for businesses across Tamil Nadu.
+              We design and build fast, reliable websites, Shopify and WooCommerce stores, and custom dashboards for businesses across Bangalore, Karur, and Tamil Nadu.
             </p>
           </div>
         </div>

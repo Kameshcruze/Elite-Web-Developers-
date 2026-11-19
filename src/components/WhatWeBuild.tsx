@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router';
 import { SERVICES } from '../content';
 
 interface WhatWeBuildProps {
@@ -77,6 +78,17 @@ export const WhatWeBuild: React.FC<WhatWeBuildProps> = ({ onSelectService }) => 
               </div>
             );
           })}
+        </div>
+
+        {/* Short internal link to full Services page */}
+        <div className="mt-7 lg:mt-10 flex justify-end">
+          <Link
+            to="/services"
+            className="group inline-flex items-center gap-2 text-[14px] lg:text-[15px] font-medium text-[#08090B] hover:opacity-75 transition-opacity"
+          >
+            <span>Learn more about our services</span>
+            <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
+          </Link>
         </div>
       </div>
     </section>

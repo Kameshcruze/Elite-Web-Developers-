@@ -1,12 +1,9 @@
 import React from 'react';
-import { FEATURED_WORKS, ProjectItem } from '../content';
+import { Link } from 'react-router';
+import { FEATURED_WORKS } from '../content';
 import { WorkCard } from './WorkCard';
 
-interface WorkProps {
-  onNavigateToWorks?: () => void;
-}
-
-export const Work: React.FC<WorkProps> = ({ onNavigateToWorks }) => {
+export const Work: React.FC = () => {
   const card01 = FEATURED_WORKS[0]; // bunt-india
   const card02 = FEATURED_WORKS[1]; // the-fat-cookie-chef
   const card03 = FEATURED_WORKS[2]; // virukshaa-events
@@ -27,7 +24,7 @@ export const Work: React.FC<WorkProps> = ({ onNavigateToWorks }) => {
           </h2>
         </div>
         <p className="max-w-[460px] text-[14.5px] lg:text-[17px] text-[rgba(245,243,239,0.68)] leading-[1.7] mt-2 lg:mt-0 lg:pb-1">
-          A look at recent flagship stores, portals, and web experiences built and delivered for Tamil Nadu businesses.
+          A look at recent flagship stores, portals, and web experiences built and delivered for Bangalore, Karur, and Tamil Nadu businesses.
         </p>
       </div>
 
@@ -61,19 +58,13 @@ export const Work: React.FC<WorkProps> = ({ onNavigateToWorks }) => {
 
       {/* Centered 'View more works →' ghost button with 56px desktop / 32px mobile gap */}
       <div className="mt-8 lg:mt-[56px] text-center">
-        <a
-          href="#/works"
-          onClick={(e) => {
-            if (onNavigateToWorks) {
-              e.preventDefault();
-              onNavigateToWorks();
-            }
-          }}
+        <Link
+          to="/works"
           className="group inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full border border-[rgba(245,243,239,0.4)] text-[#F5F3EF] font-medium text-[14px] lg:text-[15px] transition-all duration-200 ease-out hover:bg-[#F5F3EF] hover:text-[#08090B] hover:border-[#F5F3EF] active:scale-[0.98]"
         >
           <span>View more works</span>
           <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-        </a>
+        </Link>
       </div>
     </section>
   );

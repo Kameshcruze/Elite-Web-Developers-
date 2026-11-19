@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { ALL_WORKS, WORK_CATEGORIES, WorkProject } from '../works';
+import { Link } from 'react-router';
+import { ALL_WORKS, WORK_CATEGORIES } from '../works';
+import { PAGE_SEO, buildBreadcrumbSchema } from '../seo';
+import { SeoHead } from './SeoHead';
+import { Breadcrumbs } from './Breadcrumbs';
 import { ProjectScreenshot } from './ProjectScreenshot';
 import { ContactCTA } from './ContactCTA';
 import { Footer } from './Footer';
@@ -8,9 +12,7 @@ interface WorksPageProps {
   onOpenContact: () => void;
 }
 
-export const WorksPage: React.FC<WorksPageProps> = ({
-  onOpenContact,
-}) => {
+export const WorksPage: React.FC<WorksPageProps> = ({ onOpenContact }) => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
   const filteredProjects =
@@ -18,19 +20,30 @@ export const WorksPage: React.FC<WorksPageProps> = ({
       ? ALL_WORKS
       : ALL_WORKS.filter((p) => p.category === selectedCategory);
 
+  const seo = PAGE_SEO['/works'];
+
   return (
     <div className="min-h-screen bg-[#08090B] text-[#F5F3EF] flex flex-col">
+      <SeoHead
+        title={seo.title}
+        description={seo.description}
+        path="/works"
+        schemas={[
+          buildBreadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Works', path: '/works' },
+          ]),
+        ]}
+      />
+
       {/* Works Page Header Section */}
       <section className="pt-8 sm:pt-12 lg:pt-16 pb-8 lg:pb-12 px-5 sm:px-12 lg:px-[96px] max-w-[1440px] mx-auto w-full">
-        {/* Breadcrumb / Back link */}
-        <div className="mb-4 lg:mb-6">
-          <a
-            href="#/"
-            className="inline-flex items-center gap-2 text-[13px] lg:text-[14px] text-[rgba(245,243,239,0.6)] hover:text-[#FFC900] transition-colors"
-          >
-            <span>← Back to home</span>
-          </a>
-        </div>
+        <Breadcrumbs
+          items={[
+            { label: 'Home', to: '/' },
+            { label: 'Works' },
+          ]}
+        />
 
         {/* Eyebrow */}
         <div className="inline-flex items-center gap-3 mb-3">
@@ -51,7 +64,7 @@ export const WorksPage: React.FC<WorksPageProps> = ({
         {/* Subtitle & Project Count Row */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mt-4 lg:mt-6 pt-2 border-t border-[rgba(245,243,239,0.1)]">
           <p className="max-w-[580px] text-[15px] lg:text-[17px] text-[rgba(245,243,239,0.68)] leading-[1.7]">
-            Explore our complete portfolio of live client stores, corporate sites, hospitality experiences, and web apps built for Tamil Nadu and global clients.
+            Explore our complete portfolio of live client stores, corporate sites, hospitality experiences, and web apps built for businesses in Bangalore, Karur, Tamil Nadu, and beyond.
           </p>
           <div className="flex-shrink-0">
             <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#14151A] border border-[rgba(245,243,239,0.14)] text-[12.5px] font-mono text-[#FFC900]">
@@ -87,7 +100,7 @@ export const WorksPage: React.FC<WorksPageProps> = ({
                 <span
                   className={`text-[11px] px-1.5 py-0.2 rounded-full ${
                     isActive
-                      ? 'bg-[#08090B]/20 text-[#08090B] font-bold'
+                      ? 'bg-[#08090B]/20 text-[#08090B] font-semibold'
                       : 'bg-[#1B1C21] text-[rgba(245,243,239,0.5)]'
                   }`}
                 >
@@ -134,7 +147,7 @@ export const WorksPage: React.FC<WorksPageProps> = ({
 
                     {/* Title + Domain with stretched link */}
                     <div className="flex items-start justify-between gap-2 mb-1.5">
-                      <h3 className="text-[22px] lg:text-[26px] font-semibold text-[#F5F3EF] leading-tight tracking-[-0.6px]">
+                      <h2 className="text-[22px] lg:text-[26px] font-semibold text-[#F5F3EF] leading-tight tracking-[-0.6px]">
                         <a
                           href={project.url}
                           target="_blank"
@@ -145,20 +158,30 @@ export const WorksPage: React.FC<WorksPageProps> = ({
                           {project.title}
                           <span className="sr-only"> (opens in a new tab)</span>
                         </a>
-                      </h3>
+                      </h2>
                       {project.featured && (
-                        <span className="relative z-20 pointer-events-none flex-shrink-0 px-2 py-0.5 rounded text-[10px] uppercase font-bold tracking-wider bg-[#FFC900]/15 text-[#FFC900] border border-[#FFC900]/30 mt-1">
+                        <span className="relative z-20 pointer-events-none flex-shrink-0 px-2 py-0.5 rounded text-[10px] uppercase font-semibold tracking-wider bg-[#FFC900]/15 text-[#FFC900] border border-[#FFC900]/30 mt-1">
                           Featured
                         </span>
                       )}
                     </div>
 
-                    {/* Muted Domain */}
-                    {domain && (
-                      <div className="text-[12.5px] font-mono text-[rgba(245,243,239,0.5)] mb-3">
-                        {domain}
-                      </div>
-                    )}
+                    {/* Muted Domain + Case Study Link for Featured Projects */}
+                    <div className="flex items-center justify-between gap-2 mb-3">
+                      {domain && (
+                        <div className="text-[12.5px] font-mono text-[rgba(245,243,239,0.5)]">
+                          {domain}
+                        </div>
+                      )}
+                      {project.caseStudy && (
+                        <Link
+                          to={`/works/${project.slug}`}
+                          className="relative z-20 text-[12px] font-medium text-[#FFC900] hover:underline focus:outline-none focus-visible:outline-2 focus-visible:outline-[#FFC900] focus-visible:outline-offset-2 rounded-sm"
+                        >
+                          Case study →
+                        </Link>
+                      )}
+                    </div>
 
                     {/* Description */}
                     <p className="text-[14px] lg:text-[15px] text-[rgba(245,243,239,0.68)] leading-[1.65] mb-4 line-clamp-3">
@@ -200,7 +223,7 @@ export const WorksPage: React.FC<WorksPageProps> = ({
                       rel="noopener noreferrer"
                       className="relative z-20 w-10 h-10 rounded-full border border-[rgba(245,243,239,0.25)] text-[#F5F3EF] hover:border-[#FFC900] hover:text-[#FFC900] flex items-center justify-center transition-colors flex-shrink-0 focus:outline-none focus-visible:outline-2 focus-visible:outline-[#FFC900] focus-visible:outline-offset-2"
                       aria-label={`Open ${project.title} directly in new tab`}
-                      title="Open website in new tab"
+                      title={`Open ${project.title} in a new tab`}
                     >
                       <svg
                         width="16"
