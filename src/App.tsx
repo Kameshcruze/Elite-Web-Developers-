@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router';
 import { ScrollProgressBar } from './components/ScrollProgressBar';
 import { CustomCursor } from './components/CustomCursor';
@@ -54,6 +54,24 @@ export default function App() {
     }
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [location.pathname, location.hash]);
+
+  // Send GA4 page_view on client-side SPA route changes (initial load is handled by gtag('config') in index.html)
+  const isInitialRouteRef = useRef(true);
+  useEffect(() => {
+    if (isInitialRouteRef.current) {
+      isInitialRouteRef.current = false;
+      return;
+    }
+
+    const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
+    if (typeof gtag === 'function') {
+      gtag('event', 'page_view', {
+        page_path: `${location.pathname}${location.search}`,
+        page_location: window.location.href,
+        page_title: document.title,
+      });
+    }
+  }, [location.pathname, location.search]);
 
   const handleOpenContact = (service?: string) => {
     setSelectedService(service);
