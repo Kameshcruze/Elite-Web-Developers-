@@ -208,7 +208,7 @@ export function buildOrganizationSchema(): Record<string, unknown> {
     '@type': 'Organization',
     name: SITE_NAME,
     url: `${SITE_URL}/`,
-    logo: toAbsoluteUrl(DEFAULT_OG_IMAGE),
+    logo: toAbsoluteUrl('/favicon-512x512.png'),
     founder: {
       '@type': 'Person',
       name: 'Kamesh Ravichandran',
